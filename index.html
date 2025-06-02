@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Najih's Halal Gold Empire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBn5jowfO/J+aYJ8C8jA6K+lfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* --- Root Variables for Dark Theme Gold & Black --- */
+    :root {
+        --dark-bg: #0C0C0C; /* Very deep, luxurious black */
+        --card-bg: rgba(25, 25, 25, 0.7); /* Dark semi-transparent for cards */
+        --border-color: rgba(255, 215, 0, 0.3); /* Gold border hint */
+        --gold-light: #FFD700; /* Pure Gold */
+        --gold-dark: #DAA520; /* Darker Gold / Goldenrod */
+        --text-light: #E0E0E0; /* Light gray text */
+        --text-dark: #A0A0A0; /* Muted gray text */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* --- Loading and Password Screens (Unchanged as per request) --- */
+    #loading-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background: #000;
+      font-size: 2rem;
+      color: #ffd700;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    #progress {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    #password-screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+      flex-direction: column;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    #password-screen input {
+      padding: 1rem;
+      font-size: 1.2rem;
+      border: 1px solid #ffd700;
+      border-radius: 8px;
+      margin-top: 1rem;
+      background: #333;
+      color: #fff;
+      text-align: center;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    #password-screen input:focus {
+        box-shadow: 0 0 15px #ffd700;
+        background: #444;
+    }
+
+    /* --- Main Content Styling (Dark Theme Gold & Black) --- */
+    #main-content {
+      display: none;
+      position: relative;
+      background: transparent;
+      min-height: 100vh;
+      padding-top: 4rem;
+    }
+
+    /* Particle Background Canvas */
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+        background-color: var(--dark-bg);
+        opacity: 0.9; /* Slightly less opaque for better depth */
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.85); /* Very dark, opaque header */
+      color: #fff;
+      padding: 3.5rem 5%; /* Slightly more padding */
+      text-align: center;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.15); /* Stronger shadow with gold glow */
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid var(--gold-dark); /* Dark gold border */
+      backdrop-filter: blur(8px); /* More blur */
+    }
+    header h1 {
+      font-size: 4rem; /* Larger title */
+      margin-bottom: 0.7rem;
+      text-shadow: 0 0 7px var(--gold-light), 0 0 10px var(--gold-dark); /* Rich gold glow */
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 3px; /* More spacing */
+      animation: pulsateGoldGlow 2.5s infinite alternate ease-in-out; /* Slower, richer pulsation */
+    }
+
+    @keyframes pulsateGoldGlow {
+        from { text-shadow: 0 0 5px var(--gold-light), 0 0 20px var(--gold-dark); }
+        to { text-shadow: 0 0 10px var(--gold-light), 0 0 30px var(--gold-dark); }
+    }
+
+    header p {
+        font-size: 1.4rem; /* Larger sub-heading */
+        color: var(--text-light);
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+        font-weight: 300; /* Lighter weight for contrast */
+    }
+
+    section {
+      padding: 6rem 5%; /* More vertical space */
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    section h2 {
+      font-size: 4rem; /* Even larger section titles */
+      margin-bottom: 3.5rem;
+      color: var(--gold-light);
+      position: relative;
+      display: inline-block;
+      padding-bottom: 20px;
+      text-shadow: 0 0 7px var(--gold-light), 0 0 10px var(--gold-dark); /* Deep gold glow */
+      letter-spacing: 2px;
+      font-family: 'Rajdhani', sans-serif; /* Rajdhani for section titles too */
+    }
+    section h2::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 120px; /* Wider underline */
+        height: 6px; /* Thicker underline */
+        background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        border-radius: 3px;
+        box-shadow: 0 0 15px var(--gold-light); /* Gold glow under title */
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 3.5rem; /* More padding */
+      border-radius: 1.5rem;
+      margin: 3.5rem auto;
+      max-width: 1200px; /* Maximum width */
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(255, 215, 0, 0.15); /* Very deep shadow, subtle gold inner glow */
+      transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+      backdrop-filter: blur(12px); /* Stronger blur for glass effect */
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+        transform: translateY(-12px) scale(1.01);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 1), inset 0 0 40px rgba(255, 215, 0, 0.25); /* More pronounced shadow, richer gold inner glow */
+        background: rgba(30, 30, 30, 0.85);
+    }
+
+    /* Inner radial glow animation for cards on hover */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        pointer-events: none;
+        z-index: -1; /* Ensure it stays behind text */
+    }
+    .card:hover::before {
+        opacity: 1;
+        top: -50%;
+        left: -50%;
+    }
+
+    .card p {
+        font-size: 1.2rem;
+        line-height: 2; /* Increased line height for readability */
+        color: var(--text-light);
+        text-align: justify; /* Justified text for a formal look */
+        padding: 0 1rem; /* Padding for justified text */
+    }
+    .card strong {
+        color: var(--gold-light);
+        font-weight: 700;
+        text-shadow: 0 0 3px var(--gold-light);
+    }
+
+    .roadmap-image {
+      max-width: 95%;
+      height: auto;
+      border-radius: 25px; /* More rounded image corners */
+      box-shadow: 0 0 40px var(--gold-light), 0 0 80px var(--gold-dark); /* Richer gold glow */
+      margin-top: 3rem;
+      border: 4px solid var(--gold-dark); /* Thicker dark gold border */
+      transition: all 0.5s ease;
+    }
+    .roadmap-image:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 50px var(--gold-light), 0 0 100px var(--gold-dark);
+    }
+
+    .strategy-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Larger min-width for grid items */
+        gap: 3rem; /* More spacing between items */
+        text-align: left;
+    }
+    .strategy-item {
+        background: rgba(35, 35, 35, 0.8); /* Darker background for individual items */
+        border: 1px solid rgba(255, 215, 0, 0.15); /* Subtle gold border */
+        padding: 2.5rem; /* More padding */
+        border-radius: 1.5rem; /* More rounded */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(255, 215, 0, 0.08);
+        transition: background 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .strategy-item:hover {
+        background: rgba(45, 45, 45, 0.9);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), inset 0 0 18px rgba(255, 215, 0, 0.15);
+    }
+    .strategy-item strong {
+        font-size: 1.4em; /* Larger step titles */
+        display: block;
+        margin-bottom: 0.8rem;
+        color: var(--gold-light);
+        text-shadow: 0 0 5px var(--gold-light);
+    }
+    .strategy-item i { /* Style for Font Awesome icons */
+        font-size: 2.5rem; /* Larger icons */
+        color: var(--gold-dark); /* Darker gold icons */
+        flex-shrink: 0;
+        margin-top: 5px;
+        text-shadow: 0 0 6px var(--gold-dark);
+    }
+    .strategy-item p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        line-height: 1.8;
+    }
+    .gold-button {
+  margin-top: 1.5rem;
+  padding: 0.9rem 2rem;
+  font-size: 1.2rem;
+  font-family: 'Rajdhani', sans-serif;
+  color: #FFD700;
+  background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+  border: 2px solid #DAA520;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2), inset 0 0 10px rgba(255, 215, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.gold-button:hover {
+  background: linear-gradient(145deg, #222, #111);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.15);
+  transform: scale(1.03);
+}
+
+.gold-button:active {
+  background: linear-gradient(145deg, #111, #000);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2) inset;
+}
+
+
+    footer {
+      background: #000;
+      color: var(--text-dark);
+      padding: 3rem 5%; /* More padding */
+      border-top: 1px solid var(--border-color);
+      box-shadow: inset 0 5px 25px rgba(0, 0, 0, 0.8); /* Deeper shadow */
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .card {
+            max-width: 900px;
+        }
+        .strategy-list {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+    }
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 3rem;
+      }
+      header p {
+        font-size: 1.2rem;
+      }
+      section h2 {
+        font-size: 3rem;
+      }
+      .card {
+        padding: 2.5rem;
+      }
+      .card p {
+        font-size: 1rem;
+        padding: 0; /* Remove padding on mobile for justified text */
+        text-align: left; /* No justify on mobile */
+      }
+      .strategy-list {
+        grid-template-columns: 1fr;
+      }
+      .strategy-item {
+        padding: 2rem;
+      }
+      .strategy-item strong {
+        font-size: 1.2em;
+      }
+      .strategy-item i {
+        font-size: 2rem;
+      }
+    }
+    @media (max-width: 480px) {
+        header h1 {
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        header p {
+            font-size: 0.95rem;
+        }
+        section h2 {
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        .card {
+            padding: 1.5rem;
+        }
+        .card p {
+            font-size: 0.9rem;
+        }
+        .strategy-item {
+            padding: 1.5rem;
+            gap: 1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <div>Loading Najih's Halal Gold Empire...</div>
+    <div id="progress">0%</div>
+  </div>
+
+  <div id="password-screen">
+  <h2>Enter Access Code</h2>
+  <input type="password" id="password-input" placeholder="Type password and press Enter" />
+<button id="password-submit" class="gold-button">Enter</button>
+</div>
+
+
+  <div id="main-content">
+    <canvas id="particle-canvas"></canvas>
+
+    <header>
+      <h1>Najih's Halal Gold Empire</h1>
+      <p>A visionary strategy to trade, export, and build halal legacy with elite clarity</p>
+    </header>
+
+    <section>
+      <h2>📍 Visual Roadmap</h2>
+      <div class="card">
+        <p>Each stage is clearly mapped out — from initial capital to scaling your gold empire.</p>
+        <img class="roadmap-image" src="gold_export_roadmap.png" alt="Najih's Strategy Roadmap" />
+
+      </div>
+    </section>
+
+    <section>
+      <h2>📜 Master Strategy – Step-by-Step</h2>
+      <div class="card">
+        <div class="strategy-list">
+            <div class="strategy-item">
+                <i class="fas fa-hand-holding-heart"></i>
+                <div>
+                    <strong>1. Intention & Purpose</strong>
+                    <p>Begin with sincerity, seeking barakah, not greed. This is a mission for halal success through service and vision.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-wallet"></i>
+                <div>
+                    <strong>2. Forex Capital Phase</strong>
+                    <p>Train with Smart Money Concepts (LPR, OB, SMT, FVG). Get funded on prop firms like FTMO or MyFundedFX. Withdraw monthly and save 50% to build capital.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-bank"></i>
+                <div>
+                    <strong>3. Halal Bank Capital Backup</strong>
+                    <p>Apply for Murabaha or Tawarruq financing from Dubai Islamic Bank. Present a solid plan. Receive capital to purchase physical gold under halal contracts.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-coins"></i>
+                <div>
+                    <strong>4. Source Gold Legally</strong>
+                    <p>Buy 24K (999.9) gold coins or bars from Dubai refineries (Emirates Gold, Al Etihad). Get invoice, purity certificate, batch #.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-file-invoice"></i>
+                <div>
+                    <strong>5. Documentation</strong>
+                    <p>Prepare all legal docs: Invoice, Certificate of Origin (Dubai Chamber), Export Declaration (Dubai Trade), airway bill.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-plane-departure"></i>
+                <div>
+                    <strong>6. Export Process</strong>
+                    <p>Use secure air cargo (Emirates, Brinks). Declare everything. Export legally to Hong Kong, where there’s 0% import tax.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-store"></i>
+                <div>
+                    <strong>7. Resale to Jewelers</strong>
+                    <p>On landing, distribute 10 kg to 3–5 jewelers (not one). Sell legally. Profit cleanly. Build reputation with consistent cycles.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <strong>8. Hedging System</strong>
+                    <p>Short XAU/USD on MT4 to hedge risk. If price drops while gold is in transit, you win on hedge. If price rises, hedge loss is offset by higher resale price.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-rocket"></i>
+                <div>
+                    <strong>9. Reinvest Profits</strong>
+                    <p>Keep growing: 10kg → 25kg → 50kg → 100kg/month. Recycle revenue into new batches. Build your brand name. Customize packaging.</p>
+                </div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <strong>10. Risk Control & Fitna Protection</strong>
+                    <p>Avoid friends as co-owners. Always write contracts. Prepare for law changes. Diversify export markets (SG, NZ). Keep sabr. Keep salah.</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 3rem; font-size: 1.3em; color: var(--gold-light); text-shadow: 0 0 6px var(--gold-light);">
+            This is your empire. Strategic. Halal. Bulletproof.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Najih's Halal Gold Empire — Vision with purpose. Built with tawakkul. Strengthened with action.</p>
+    </footer>
+  </div>
+
+  <script>
+    // --- Existing JavaScript for Loading and Password Screens ---
+    let load = 0;
+    const loadingScreen = document.getElementById('loading-screen');
+    const progress = document.getElementById('progress');
+    const passwordScreen = document.getElementById('password-screen');
+
+    const interval = setInterval(() => {
+      load += 2;
+      progress.innerText = load + '%';
+      if (load >= 100) {
+        clearInterval(interval);
+        loadingScreen.style.display = 'none';
+        passwordScreen.style.display = 'flex';
+      }
+    }, 50);
+
+    function validatePassword(value) {
+  if (value === "najih786") {
+    passwordScreen.style.display = "none";
+    document.getElementById("main-content").style.display = "block";
+    initParticleBackground();
+  } else {
+    alert("Incorrect password. Try again.");
+    document.getElementById("password-input").value = '';
+  }
+}
+
+document.getElementById("password-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" || e.keyCode === 13) {
+    validatePassword(this.value);
+  }
+});
+
+document.getElementById("password-submit").addEventListener("click", function() {
+  const value = document.getElementById("password-input").value;
+  validatePassword(value);
+});
+
+    // --- New & Improved JavaScript for Gold Particle Background Animation ---
+    function initParticleBackground() {
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = 120; // More particles for a denser gold effect
+        const connectionDistance = 180; // Max distance for particles to connect
+
+        function setCanvasDimensions() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 2 + 1; // Size for gold dust
+                this.vx = (Math.random() - 0.5) * 0.4; // Slower, elegant movement
+                this.vy = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.8 + 0.2;
+                this.decay = Math.random() * 0.002 + 0.0005; // Slower decay
+                // Gold color range (RGB)
+                this.color = {
+                    r: Math.floor(218 + Math.random() * 37), /* DAA520 to FFD700 */
+                    g: Math.floor(165 + Math.random() * 72),
+                    b: Math.floor(32 + Math.random() * 208)
+                };
+            }
+
+            draw() {
+                ctx.beginPath();
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.radius * 2.5 /* Larger glow radius */
+                );
+                gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity * 0.9})`);
+                gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity * 0.5})`);
+                gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+                ctx.fillStyle = gradient;
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity -= this.decay;
+
+                if (this.opacity <= 0 || this.x < -this.radius || this.x > canvas.width + this.radius || this.y < -this.radius || this.y > canvas.height + this.radius) {
+                    // Reset particle
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.opacity = 1;
+                    this.vx = (Math.random() - 0.5) * 0.4;
+                    this.vy = (Math.random() - 0.5) * 0.4;
+                    this.radius = Math.random() * 2 + 1;
+                    this.decay = Math.random() * 0.002 + 0.0005;
+                    this.color = {
+                        r: Math.floor(218 + Math.random() * 37),
+                        g: Math.floor(165 + Math.random() * 72),
+                        b: Math.floor(32 + Math.random() * 208)
+                    };
+                }
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = Math.sqrt(
+                        Math.pow(particles[a].x - particles[b].x, 2) +
+                        Math.pow(particles[a].y - particles[b].y, 2)
+                    );
+                    if (distance < connectionDistance) {
+                        // Gold-toned lines for connections
+                        ctx.strokeStyle = `rgba(${particles[a].color.r}, ${particles[a].color.g}, ${particles[a].color.b}, ${Math.min(particles[a].opacity, particles[b].opacity) * (1 - distance / connectionDistance) * 0.7})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            // Darker, less transparent fill for elegant trails
+            ctx.fillStyle = 'rgba(12, 12, 12, 0.15)'; /* Match dark-bg, subtle trail effect */
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            connectParticles();
+
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize and start
+        setCanvasDimensions();
+        createParticles();
+        animate();
+
+        // Adjust canvas on window resize
+        window.addEventListener('resize', setCanvasDimensions);
+    }
+  </script>
+</body>
+</html>
